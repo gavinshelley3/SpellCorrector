@@ -20,31 +20,31 @@ public class Trie implements ITrie {
             char c = word.charAt(0);
             int ascii = (int) c - 97;
             Node n2 = new Node();
-            if (n.getChildren()[ascii] == null) {
+            if (n.getChildren()[ascii] == null) {   // If the node is null, create a new node
                 n.getChildren()[ascii] = n2;
                 setNodeCount();
-                if (word.length() == 1) {
+                if (word.length() == 1) {       // If the word is only one character, increment the count
                     n2.incrementValue();
                     setWordCount();
                     return;
-                } else {
+                } else {                // If the word is longer than one character, call addHelper again
                     String newWord = word.substring(1, word.length());
                     addHelper(n2, newWord);
                 }
             }
-            else {
-                if (word.length() == 1) {
+            else {          // If the node already exists
+                if (word.length() == 1) {           // If the word is only one character, increment the count
                     n.getChildren()[ascii].incrementValue();
-                    if (n.getChildren()[ascii].getValue() == 1) {
+                    if (n.getChildren()[ascii].getValue() == 1) {   // If the count was 0, increment the word count
                         setWordCount();
                     }
                 }
-                else  {
+                else  {             // If the word is longer than one character, call addHelper again
                     String newWord = word.substring(1, word.length());
                     addHelper(n.getChildren()[ascii], newWord);
                 }
             }
-        } else {
+        } else {        // If the word is empty, return
             return;
         }
     }
@@ -114,10 +114,13 @@ public class Trie implements ITrie {
     public boolean equals(Object obj) {
 
 //        Check for null
-//
-        Trie other = (Trie)obj;
-//        return equalsHelper(Node n1, Node n2);
-        return true;
+        if (obj == null) {
+            return false;
+        }
+        else {
+            Trie other = (Trie) obj;
+            return equalsHelper(root, other.root);
+        }
     }
 
     public boolean equalsHelper(Node n1, Node n2) {

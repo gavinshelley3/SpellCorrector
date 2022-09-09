@@ -42,9 +42,8 @@ public class SpellCorrector implements ISpellCorrector {
 
 
 
-
 //        Call find(inputWord) on the trie
-//        find(inputWord);
+//        Trie root.find(inputWord);
 
 //        If the word is found, return the word
 //        If the word is not found, return null
