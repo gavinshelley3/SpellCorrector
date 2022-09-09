@@ -97,8 +97,17 @@ public class Trie implements ITrie {
 
     @Override
     public int hashCode() {
-//      wordCount * nodeCount * # of first non-null Node in Trie
-        return (root.getValue() << 39);
+//      (wordCount * nodeCount) + nodeCount * # of first non-null Node in Trie
+        for (int i = 0; i < 26; i++) {
+            if (root.getChildren()[i] != null) {
+                if (i == 0) {
+                    return ((wordCount * nodeCount) + nodeCount) * 26;
+                } else {
+                    return ((wordCount * nodeCount) + nodeCount) * i;
+                }
+            }
+        }
+        return (wordCount * nodeCount * 26);
     }
 
     @Override
@@ -111,18 +120,22 @@ public class Trie implements ITrie {
         return true;
     }
 
-    void equalsHelper(Node n1, Node n2) {
-//        for (int i = 0; i < t.getChildren(); ++i) {
-//
-//            Node child = (Node)t.getChildren()[i];
-//            if (child != null) {
-//                if (n1.count != n2.count) {
-//                    return;
-//                } else if (n1.children != n2.getChildren()) {
-//                    return;
-//                }
-//            }
-//        }
+    public boolean equalsHelper(Node n1, Node n2) {
+
+        for (int i = 0; i < n1.getChildren().length; i++) {
+            if (n1.getChildren()[i] != null && n2.getChildren()[i] != null) {
+                    if (n1.getChildren()[i].getValue() == n2.getChildren()[i].getValue()) {
+                        equalsHelper(n1.getChildren()[i], n2.getChildren()[i]);
+                    } else {
+                        return false;
+                    }
+            } else if (n1.getChildren()[i] == null && n2.getChildren()[i] == null) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -148,4 +161,6 @@ public class Trie implements ITrie {
             }
         }
     }
+
+    
 }
