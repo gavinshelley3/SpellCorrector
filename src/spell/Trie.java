@@ -1,5 +1,8 @@
 package spell;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Trie implements ITrie {
     private Node root;
     private int wordCount;
@@ -49,7 +52,6 @@ public class Trie implements ITrie {
         }
     }
 
-
     public Node find(String word) {
         return findHelper(word, root);
     }
@@ -76,6 +78,57 @@ public class Trie implements ITrie {
         }  else {
             return null;
         }
+    }
+
+    public String bestWord(Set<String> set) {
+        if (!set.isEmpty()) {
+            int bestCount = 0;
+            String bestWord = set.iterator().next();
+            for (String s : set) {
+                Node n = new Node();
+                n = find(s);
+                if (n.getValue() > bestCount) {
+                    bestCount = n.getValue();
+                    bestWord = s;
+                }
+            }
+            return bestWord;
+        }
+        else {
+            return "";
+        }
+    }
+
+
+    public String build1EditWords(String inputWord) {
+        // Build all words that are 1 edit away from inputWord
+        Set<String> setFound = new HashSet<String>();
+        Set<String> setTotal = new HashSet<String>();
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < inputWord.length(); j++) {
+                String newWord = inputWord.substring(0, j) + (char) (i + 97) + inputWord.substring(j, inputWord.length());
+                setTotal.add(newWord);
+                if (find(newWord) != null) {
+                    setFound.add(newWord);
+                }
+            }
+        }
+        for (String s : setFound) {
+            System.out.println(s);
+        }
+        // Call find on each word
+        // If the word is found, add it to a set
+        // Return the word with the highest frequency
+        // Return the set
+        return inputWord;
+    }
+
+    public String build2EditWords(String inputWord) {
+        // Build all words that are 2 edits away from inputWord
+        // Call find on each word
+        // If the word is found, add it to a list
+        // Return the list
+        return inputWord;
     }
 
 
