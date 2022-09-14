@@ -11,7 +11,7 @@ public class Trie implements ITrie {
     public Trie() {
         root = new Node();
         wordCount = 0;
-        nodeCount = 0;
+        nodeCount = 1;
     }
 
     public void add(String word) {
@@ -31,8 +31,8 @@ public class Trie implements ITrie {
                     setWordCount();
                     return;
                 } else {                // If the word is longer than one character, call addHelper again
-                    String newWord = word.substring(1, word.length());
-                    addHelper(n2, newWord);
+                    String addWord = word.substring(1, word.length());
+                    addHelper(n2, addWord);
                 }
             }
             else {          // If the node already exists
@@ -43,8 +43,8 @@ public class Trie implements ITrie {
                     }
                 }
                 else  {             // If the word is longer than one character, call addHelper again
-                    String newWord = word.substring(1, word.length());
-                    addHelper(n.getChildren()[ascii], newWord);
+                    String addWord = word.substring(1, word.length());
+                    addHelper(n.getChildren()[ascii], addWord);
                 }
             }
         } else {        // If the word is empty, return
@@ -65,8 +65,8 @@ public class Trie implements ITrie {
                 return null;
             } else {
                 if (word.length() > 1) {
-                    String newWord = word.substring(1, word.length());
-                    return (findHelper(newWord, n.getChildren()[ascii]));
+                    String addWord = word.substring(1, word.length());
+                    return (findHelper(addWord, n.getChildren()[ascii]));
                 } else {
                     if (n.getChildren()[ascii].getValue() == 0) {
                         return null;
@@ -90,47 +90,18 @@ public class Trie implements ITrie {
                 if (n.getValue() > bestCount) {
                     bestCount = n.getValue();
                     bestWord = s;
+                } else if (n.getValue() == bestCount) {
+                    if (s.compareTo(bestWord) < 0) {
+                        bestWord = s;
+                    }
                 }
             }
             return bestWord;
         }
         else {
-            return "";
+            return null;
         }
     }
-
-
-    public String build1EditWords(String inputWord) {
-        // Build all words that are 1 edit away from inputWord
-        Set<String> setFound = new HashSet<String>();
-        Set<String> setTotal = new HashSet<String>();
-        for (int i = 0; i < 26; i++) {
-            for (int j = 0; j < inputWord.length(); j++) {
-                String newWord = inputWord.substring(0, j) + (char) (i + 97) + inputWord.substring(j, inputWord.length());
-                setTotal.add(newWord);
-                if (find(newWord) != null) {
-                    setFound.add(newWord);
-                }
-            }
-        }
-        for (String s : setFound) {
-            System.out.println(s);
-        }
-        // Call find on each word
-        // If the word is found, add it to a set
-        // Return the word with the highest frequency
-        // Return the set
-        return inputWord;
-    }
-
-    public String build2EditWords(String inputWord) {
-        // Build all words that are 2 edits away from inputWord
-        // Call find on each word
-        // If the word is found, add it to a list
-        // Return the list
-        return inputWord;
-    }
-
 
     public int getWordCount() {
         return this.wordCount;
@@ -165,29 +136,24 @@ public class Trie implements ITrie {
 
     @Override
     public boolean equals(Object obj) {
-
-//        Check for null
-        if (obj == null) {
-            return false;
-        }
-        else {
-            Trie other = (Trie) obj;
-            return equalsHelper(root, other.root);
-        }
+        Trie other = (Trie) obj;
+        return equalsHelper(root, other.root);
     }
 
     public boolean equalsHelper(Node n1, Node n2) {
-
+        if (n1.getValue() != n2.getValue()) {
+            return false;
+        }
         for (int i = 0; i < n1.getChildren().length; i++) {
             if (n1.getChildren()[i] != null && n2.getChildren()[i] != null) {
                     if (n1.getChildren()[i].getValue() == n2.getChildren()[i].getValue()) {
-                        equalsHelper(n1.getChildren()[i], n2.getChildren()[i]);
+                        if(!equalsHelper(n1.getChildren()[i], n2.getChildren()[i])) {
+                            return false;
+                        }
                     } else {
                         return false;
                     }
-            } else if (n1.getChildren()[i] == null && n2.getChildren()[i] == null) {
-                continue;
-            } else {
+            } else if (n1.getChildren()[i] != null || n2.getChildren()[i] != null) {
                 return false;
             }
         }
